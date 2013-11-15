@@ -1,8 +1,17 @@
 Flask==0.10.1
+Flask-Sockets==0.1
 Jinja2==2.7.1
 MarkupSafe==0.18
 Pygments==1.6
 Werkzeug==0.9.4
 bpython==0.12
+gevent==0.13.8
+gevent-websocket==0.3.6
+greenlet==0.4.1
+gunicorn==18.0
 itsdangerous==0.23
+oauthlib==0.6.0
+requests==2.0.0
+requests-oauthlib==0.3.2
+twython==3.1.0
 wsgiref==0.1.2
