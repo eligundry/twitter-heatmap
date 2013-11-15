@@ -14,6 +14,10 @@ var get_tweets = function() {
 		console.log(msg);
 	}
 
+	tweets.onclose = function() {
+		console.log("Connection closed!");
+	}
+
 	return tweets;
 };
 

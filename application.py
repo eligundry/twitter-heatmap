@@ -13,16 +13,18 @@ TA = {
     'ats': "D5UK4AoB89AvbfrejZJYDMKvk94sdsiyIyUKBHBdfk"
 }
 
-class TweetStreamer(TwythonStreamer):
+class TweetStreamer(TwythonStreamer, websocket):
+    self.ws = websocket
+
     def on_success(self, data):
-        return data['text']
+        self.ws.send(data['text'])
 
     def on_error(self, status_code, error):
         print("%s: %s", status_code, error)
         self.disconnect()
 
-def setup_twitter():
-   return TweetStreamer(TA['ck'], TA['cs'], TA['atk'], TA['ats'])
+def setup_twitter(websocket):
+   return TweetStreamer(TA['ck'], TA['cs'], TA['atk'], TA['ats'], websocket)
 
 @app.route('/')
 def root():
@@ -31,13 +33,11 @@ def root():
 @sockets.route('/tweets')
 def get_tweets(ws):
     query = {
-        "locations": "41.1367915,-81.389365,41.161646,-81.3413963"
+        "locations": "-81.3893,41.1367,-81.3413,41.1616"
     }
 
-    a = setup_twitter()
-
-    while True:
-        ws.send(a.statuses.filter(locations = query["locations"]))
+    a = setup_twitter(ws)
+    a.statuses.filter(locations="-81.3893,41.1367,-81.3413,41.1616")
 
 if __name__ == "__main__":
     app.debug = True
