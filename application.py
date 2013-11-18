@@ -25,18 +25,32 @@ class TweetStreamer(TwythonStreamer):
     def setup_websocket(self, websocket):
         self.websocket = websocket
 
-def setup_twitter(websocket):
+def setup_twitter_stream(websocket):
    t = TweetStreamer(TA['ck'], TA['cs'], TA['atk'], TA['ats'])
    t.setup_websocket(websocket)
    return t
+
+def setup_twitter():
+    return Twython(TA['ck'], TA['cs'], TA['atk'], TA['ats'])
 
 @app.route('/')
 def root():
     return render_template('map.html')
 
+@app.route('/oembed/<tweet_id>')
+def get_oembed(tweet_id):
+    options = {
+        "id": str(tweet_id),
+        "omit_script": True,
+        "lang": "en"
+    }
+
+    a = setup_twitter()
+    return json.dumps(a.get_oembed_tweet(options))
+
 @sockets.route('/tweets')
 def get_tweets(ws):
-    a = setup_twitter(ws)
+    a = setup_twitter_stream(ws)
     a.statuses.filter(locations="-81.3893,41.1367,-81.3413,41.1616")
 
 if __name__ == "__main__":

@@ -29,12 +29,16 @@ var get_tweets = function() {
 	return tweets;
 };
 
-var create_embedded_tweet = function(tweet) {
-	var result = "<blockquote class='twitter-tweet'>";
-	result += tweet;
-	result += "</blockquote>";
+var create_embedded_tweet = function(tweet_id) {
+	var result = $.ajax({
+		url: "http://" + window.location.host + "/oembed/" + tweet_id,
+		dataType: "json",
+		type: "GET"
+	});
 
-	return result;
+	result = jQuery.parseJSON(result);
+
+	return result.html;
 }
 
 $(function() {
@@ -80,7 +84,7 @@ $(function() {
 			// Add a marker to the map
 			var marker = new L
 				.marker(t.coordinates.coordinates.reverse())
-				.bindPopup(create_embedded_tweet(t.text))
+				.bindPopup(create_embedded_tweet(t.id))
 				.addTo(markerLayer);
 
 			// Update heatmap data
