@@ -94,21 +94,25 @@
         var self = this;
         var latLngs = [];
         this._maxValue = 0;
-        dataset.forEach(function(d) {
+
+        jQuery.each(dataset.data, function(index, d) {
             latLngs.push(new L.LatLng(d.lat, d.lon));
             self._maxValue = Math.max(self._maxValue, d.value);
         });
+
         this._bounds = new L.LatLngBounds(latLngs);
 
         this._quad = new QuadTree(this._boundsToQuery(this._bounds), false, 6, 6);
 
-        dataset.forEach(function(d) {
+        jQuery.each(dataset.data, function(index, d) {
+        	console.log(d);
             self._quad.insert({
                 x: d.lon,
                 y: d.lat,
                 value: d.value
             });
         });
+
         this.redraw();
     },
 

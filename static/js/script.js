@@ -29,18 +29,6 @@ var get_tweets = function() {
 	return tweets;
 };
 
-var create_embedded_tweet = function(tweet_id) {
-	var result = $.ajax({
-		url: "http://" + window.location.host + "/oembed/" + tweet_id,
-		dataType: "json",
-		type: "GET"
-	});
-
-	result = jQuery.parseJSON(result);
-
-	return result.html;
-}
-
 $(function() {
 	// Make the map full screen
 	$("#map").css({
@@ -57,14 +45,13 @@ $(function() {
 
 	var markerLayer = new L.LayerGroup();
 
-	var heatmap = new L.TileLayer.HeatMap(heatmap_config),
-		heatmap_data = {
-			max: 5,
-			data: []
-		};
+	var heatmap = new L.TileLayer.HeatMap(heatmap_config);
+	heatmap_data = {
+		max: 5,
+		data: []
+	};
 
-	// var map = L.map('map').setView([41.150556,-81.361111], 14);
-	map = new L.Map('map', {
+	var map = new L.Map('map', {
 		center: [41.150556, -81.361111],
 		zoom: 14,
 		layers: [baseLayer, markerLayer, heatmap]
@@ -80,17 +67,17 @@ $(function() {
 			tweet_stream.close();
 		}
 
-		if (t.coordinates != null) {
+		if ((t.geo != null) && (t.geo.length == 2)) {
 			// Add a marker to the map
 			var marker = new L
-				.marker(t.coordinates.coordinates.reverse())
-				.bindPopup(create_embedded_tweet(t.id))
+				.marker(t.geo)
+				.bindPopup(t.html)
 				.addTo(markerLayer);
 
 			// Update heatmap data
 			heatmap_data.data.push({
-				lat: t.coordinates.coordinates[1],
-				lon: t.coordinates.coordinates[0],
+				lat: t.geo[0],
+				lon: t.geo[1],
 				value: 1
 			});
 
