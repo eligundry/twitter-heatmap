@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template
 from flask_sockets import Sockets
 from twython import Twython, TwythonStreamer
 import json
