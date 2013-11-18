@@ -10,8 +10,8 @@ var get_tweets = function() {
 		console.log("Connection open!");
 	}
 
-	tweets.onmessage = function(msg) {
-		console.log(msg);
+	tweets.onmessage = function(event) {
+		console.log(event.data);
 	}
 
 	tweets.onclose = function() {
@@ -28,7 +28,7 @@ $(function() {
 		width: $(window).width()
 	});
 
-	var map = L.map('map').setView([41.150556,-81.361111], 13);
+	var map = L.map('map').setView([41.150556,-81.361111], 15);
 	var markerLayer = new L.LayerGroup();
 
 	L.tileLayer('http://{s}.tile.cloudmade.com/' + leaflet_config.key + '/' + leaflet_config.style + '/256/{z}/{x}/{y}.png', {

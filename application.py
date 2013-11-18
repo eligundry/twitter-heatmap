@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify
 from flask_sockets import Sockets
 from twython import Twython, TwythonStreamer
+import json
 
 app = Flask(__name__)
 sockets = Sockets(app)
@@ -13,18 +14,21 @@ TA = {
     'ats': "D5UK4AoB89AvbfrejZJYDMKvk94sdsiyIyUKBHBdfk"
 }
 
-class TweetStreamer(TwythonStreamer, websocket):
-    self.ws = websocket
-
+class TweetStreamer(TwythonStreamer):
     def on_success(self, data):
-        self.ws.send(data['text'])
+        self.websocket.send(json.dumps(data))
 
     def on_error(self, status_code, error):
         print("%s: %s", status_code, error)
         self.disconnect()
 
+    def setup_websocket(self, websocket):
+        self.websocket = websocket
+
 def setup_twitter(websocket):
-   return TweetStreamer(TA['ck'], TA['cs'], TA['atk'], TA['ats'], websocket)
+   t = TweetStreamer(TA['ck'], TA['cs'], TA['atk'], TA['ats'])
+   t.setup_websocket(websocket)
+   return t
 
 @app.route('/')
 def root():
@@ -32,10 +36,6 @@ def root():
 
 @sockets.route('/tweets')
 def get_tweets(ws):
-    query = {
-        "locations": "-81.3893,41.1367,-81.3413,41.1616"
-    }
-
     a = setup_twitter(ws)
     a.statuses.filter(locations="-81.3893,41.1367,-81.3413,41.1616")
 
