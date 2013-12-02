@@ -46,8 +46,8 @@ $(function() {
 	var markerLayer = new L.LayerGroup();
 
 	var heatmap = new L.TileLayer.HeatMap(heatmap_config);
-	heatmap_data = {
-		max: 5,
+	var heatmap_data = {
+		max: 140,
 		data: []
 	};
 
@@ -78,10 +78,9 @@ $(function() {
 			heatmap_data.data.push({
 				lat: t.geo[0],
 				lon: t.geo[1],
-				value: 1
+				value: t.weight
 			});
 
-			console.log(heatmap_data);
 			heatmap.setData(heatmap_data);
 		}
 	};

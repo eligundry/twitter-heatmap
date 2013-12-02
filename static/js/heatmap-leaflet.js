@@ -105,7 +105,6 @@
         this._quad = new QuadTree(this._boundsToQuery(this._bounds), false, 6, 6);
 
         jQuery.each(dataset.data, function(index, d) {
-        	console.log(d);
             self._quad.insert({
                 x: d.lon,
                 y: d.lat,

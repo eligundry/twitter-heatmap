@@ -1129,9 +1129,12 @@ L.LatLng = function (rawLat, rawLng) { // (Number, Number)
 	var lat = parseFloat(rawLat),
 	    lng = parseFloat(rawLng);
 
-	if (isNaN(lat) || isNaN(lng)) {
-		throw new Error('Invalid LatLng object: (' + rawLat + ', ' + rawLng + ')');
-	}
+	// if (isNaN(lat) || isNaN(lng)) {\
+
+	// 	throw new Error('Invalid LatLng object: (' + rawLat + ', ' + rawLng + ')');\
+
+	// }\
+
 
 	this.lat = lat;
 	this.lng = lng;
