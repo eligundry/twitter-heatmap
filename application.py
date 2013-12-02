@@ -1,14 +1,11 @@
 from flask import Flask, render_template
 from flask_sockets import Sockets
 from TweetStreamer import *
+from GDT import *
 
 app = Flask(__name__)
 sockets = Sockets(app)
-
-def setup_twitter_stream(websocket, cache_file):
-   t = TweetStreamer(TA['ck'], TA['cs'], TA['atk'], TA['ats'])
-   t.flush_tweets(websocket, cache_file)
-   return t
+gdt = GDT('sqlite:///tweets.db', 'tweets')
 
 @app.route('/')
 def root():
@@ -16,9 +13,8 @@ def root():
 
 @sockets.route('/tweets')
 def get_tweets(ws):
-    a = setup_twitter_stream(ws)
-    a.statuses.filter(locations="-81.3893,41.1367,-81.3413,41.1616")
+    pass
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.debug = True
     app.run()
