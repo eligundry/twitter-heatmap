@@ -18,6 +18,7 @@ def setup_twitter_stream():
     return TweetStreamer(TA['ck'], TA['cs'], TA['atk'], TA['ats'])
 
 def setup_twitter():
+    """ Sets up a good ol' REST connection to the Twitter API """
     return Twython(TA['ck'], TA['cs'], TA['atk'], TA['ats'])
 
 class TweetStreamer(TwythonStreamer):
@@ -55,7 +56,7 @@ class Tweet():
         return json.dumps(self.data)
 
     def get_oembed(self):
-        """ Gets the oembed html from the Twitter API """
+        """ Gets the OEmbed HTML from the Twitter API """
         a = setup_twitter()
         html = a.get_oembed_tweet(id = str(self.data['id']), omit_script = True, lang = "en", maxwidth = 300)
         self.data['html'] = html['html']
