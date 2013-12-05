@@ -74,6 +74,9 @@ $(function() {
 				.bindPopup(t.html)
 				.addTo(markerLayer);
 
+			// Reload the Twitter oEmbed widget
+			twttr.widgets.load();
+
 			// Update heatmap data
 			heatmap_data.data.push({
 				lat: t.geo[0],
