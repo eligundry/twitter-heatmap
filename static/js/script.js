@@ -3,18 +3,6 @@ var leaflet_config = {
 	key: "2ca42758fa584876a09900fc5b401400"
 };
 
-var heatmap_config = {
-	radius: 20,
-	opacity: 0.5,
-	gradient: {
-		0.45: "rgb(0,0,255)",
-		0.55: "rgb(0,255,255)",
-		0.65: "rgb(0,255,0)",
-		0.95: "yellow",
-		1.0: "rgb(255,0,0)"
-	}
-};
-
 var get_tweets = function() {
 	var tweets = new WebSocket("ws://" + window.location.host + "/tweets");
 
@@ -45,16 +33,10 @@ $(function() {
 
 	var markerLayer = new L.LayerGroup();
 
-	var heatmap = new L.TileLayer.HeatMap(heatmap_config);
-	var heatmap_data = {
-		max: 140,
-		data: []
-	};
-
 	var map = new L.Map('map', {
 		center: [41.150556, -81.361111],
 		zoom: 14,
-		layers: [baseLayer, markerLayer, heatmap]
+		layers: [baseLayer, markerLayer]
 	});
 
 	var tweet_stream = get_tweets();
@@ -72,14 +54,5 @@ $(function() {
 			.marker([t.latitude, t.longitude])
 			.bindPopup(t.html)
 			.addTo(markerLayer);
-
-
-		// Update heatmap data
-		heatmap_data.data.push({
-			lat: t.latitude,
-			lon: t.longitude
-		});
-
-		heatmap.setData(heatmap_data);
 	};
 });
