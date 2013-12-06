@@ -5,7 +5,7 @@ from GDT import *
 
 app = Flask(__name__)
 sockets = Sockets(app)
-gdt = GDT('sqlite:///tweets.db', 'tweets')
+gdt = GDT('sqlite:///tweets.db', 'tweets', [41.1367, -81.3893], [41.1616, -81.3413])
 
 @app.route('/')
 def root():
@@ -13,7 +13,10 @@ def root():
 
 @sockets.route('/tweets')
 def get_tweets(ws):
-    pass
+    result = gdt.find()
+
+    for item in result:
+        ws.send(json.dumps(item))
 
 if __name__ == '__main__':
     app.debug = True

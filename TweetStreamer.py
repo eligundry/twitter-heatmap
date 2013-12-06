@@ -30,6 +30,8 @@ class TweetStreamer(TwythonStreamer):
         tweet = Tweet(data)
         gdt.insert(tweet.data)
 
+        print tweet
+
     def on_error(self, status_code, error):
         print("%s: %s", status_code, error)
         self.disconnect()
@@ -40,8 +42,8 @@ class Tweet():
             'id': data['id'],
             'text': data['text'],
             'html': None,
-            'latitude': data['geo']['coordinates'][1],
-            'longitude': data['geo']['coordinates'][0],
+            'latitude': data['geo']['coordinates'][0],
+            'longitude': data['geo']['coordinates'][1],
             'user_id': data['user']['id'],
             'username': data['user']['screen_name'],
             'timestamp': parser.parse(data['created_at']).__str__()
@@ -56,7 +58,7 @@ class Tweet():
         return json.dumps(self.data)
 
     def get_oembed(self):
-        """ Gets the OEmbed HTML from the Twitter API """
+        """ Gets the oEmbed HTML from the Twitter API """
         a = setup_twitter()
         html = a.get_oembed_tweet(id = str(self.data['id']), omit_script = True, lang = "en", maxwidth = 300)
         self.data['html'] = html['html']

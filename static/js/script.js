@@ -67,24 +67,23 @@ $(function() {
 			tweet_stream.close();
 		}
 
-		if ((t.geo != null) && (t.geo.length == 2)) {
-			// Add a marker to the map
-			var marker = new L
-				.marker(t.geo)
-				.bindPopup(t.html)
-				.addTo(markerLayer);
+		// Add a marker to the map
+		var marker = new L
+			.marker([t.longitude, t.latitude])
+			.bindPopup(t.html)
+			.on('onpopup', function(e) {
+				twttr.widgets.load();
+				console.log("clicked");
+			})
+			.addTo(markerLayer);
 
-			// Reload the Twitter oEmbed widget
-			twttr.widgets.load();
 
-			// Update heatmap data
-			heatmap_data.data.push({
-				lat: t.geo[0],
-				lon: t.geo[1],
-				value: t.weight
-			});
+		// Update heatmap data
+		heatmap_data.data.push({
+			lat: t.latitude,
+			lon: t.longitude
+		});
 
-			heatmap.setData(heatmap_data);
-		}
+		heatmap.setData(heatmap_data);
 	};
 });

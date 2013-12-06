@@ -15,17 +15,17 @@ class GDT():
         """
         Constructor for the GDT data type
 
-        :database => Location of the database to use.
-        :datatype => The datatype of the GeoData we are using. This will also
-                     be the table name.
-        :latlong1 => A latitude and longitude pair representing the southwest
-                     corner of a box you want to track. (optional)
-        :latlong2 => A latitude and longitude pair representing the northeast
-                     corner of a box you want to track. (optional)
+       :param database: (required) Location of the database to use.
+       :param datatype: (required) The datatype of the GeoData we are using.
+                        This will also be the table name.
+       :param latlong1: (optional) A latitude and longitude pair representing
+                        the southwest corner of a box you want to track. (optional)
+       :param latlong2: (optional) A latitude and longitude pair representing
+                        the northeast corner of a box you want to track. (optional)
         """
 
-        self.database = dataset.connect(database)
-        self.table = self.database[datatype]
+        self._database = dataset.connect(database)
+        self._table = self._database[datatype].table
 
         if type(latlong1) is not list and type(latlong2) is not list:
             raise TypeError("latlong1 and latlong2 must be lists")
@@ -41,32 +41,74 @@ class GDT():
             if (type(element) is not float) and (type(element) is not int):
                 raise TypeError("All elements in latlong2 must be a number")
 
-        self.latlong1, self.latlong2 = latlong1, latlong2
+        self._latlong1, self._latlong2 = latlong1, latlong2
+
+    @property
+    def latlong1(self):
+        """ The coordinate pair that represents the southwest corner of the bounding box """
+        return self._latlong1
+
+    @latlong1.setter
+    def latlong1(self, value):
+        if type(value) is not list:
+            raise TypeError("latlong1 must be a list")
+
+        if len(value) is not 2:
+            raise ValueError("latlong1 must be a list of exactly 2 numbers")
+
+        for element in value:
+            if (type(element) is not float) and (type(element) is not int):
+                raise TypeError("All elements in latlong1 must be a number")
+
+        self._latlong1 = value
+
+    @property
+    def latlong2(self):
+        """ The coordinate pair that represents the southwest corner of the bounding box """
+        return self._latlong2
+
+    @latlong2.setter
+    def latlong1(self, value):
+        if type(value) is not list:
+            raise TypeError("latlong2 must be a list")
+
+        if len(value) is not 2:
+            raise ValueError("latlong2 must be a list of exactly 2 numbers")
+
+        for element in value:
+            if (type(element) is not float) and (type(element) is not int):
+                raise TypeError("All elements in latlong2 must be a number")
+
+        self._latlong2 = value
 
     def insert(self, item):
         """
         Inserts a new item into the database
 
-        :item => A dictionary of the values you want to insert. This will
-                 automatically create the schema of the table for you, based
-                 upon the keys of the dictionary.
+       :param item: (required) A dictionary of the values you want to insert.
+                    This will automatically create the schema of the table for
+                    you, based upon the keys of the dictionary.
         """
 
-        self.table.insert(item)
+        self._table.insert(item)
 
-    def find_by_freshness(self, years=0, months=0, days=0, hours=0, minutes=0, seconds=0):
+    def insert_many(self, items):
         """
-        Finds one or more items based how recently it was inserted
+        Inserts many items into the database
 
-        :years => How many years back you want to search back
-        :months => How many months back you want to search back
-        :days => How many days back you want to search back
-        :hours => How many hours back you want to search back
-        :minutes => How many minutes back you want to search back
-        :seconds => How many seconds back you want to search back
+        :param items: (optional) An array of dicts that you want to insert.
+                      This will be much faster than iterating over insert.
         """
 
-        # First, let's calculate the relative time we want to search for
-        start = datetime.datetime.now()
-        end = start - dateutil.relativedelta(years=years, months=months,
-                days=days, hours=hours, minutes=minutes, seconds=seconds)
+        self._table.insert_many(items)
+
+    def find(self):
+        """
+        Finds all items based upon the bounding box defined in the constructor
+        """
+
+        statement = "select * from {0} where longitude between {1} and {2} and latitude between {3} and {4}"
+        statement = statement.format(self._table.name, self._latlong1[0],
+                self._latlong2[0], self._latlong1[1], self._latlong2[1])
+
+        return self._database.query(statement)
