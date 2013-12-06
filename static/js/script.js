@@ -69,7 +69,7 @@ $(function() {
 
 		// Add a marker to the map
 		var marker = new L
-			.marker([t.longitude, t.latitude])
+			.marker([t.latitude, t.longitude])
 			.bindPopup(t.html)
 			.addTo(markerLayer);
 

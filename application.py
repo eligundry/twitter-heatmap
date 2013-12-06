@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from flask_sockets import Sockets
-from TweetStreamer import *
 from GDT import *
+import json
 
 app = Flask(__name__)
 sockets = Sockets(app)
@@ -17,9 +17,6 @@ def send_tweets(ws):
 
     for item in result:
         ws.send(json.dumps(item))
-
-    while ws.socket is not None:
-        gevent.sleep(1)
 
 if __name__ == '__main__':
     app.debug = True
