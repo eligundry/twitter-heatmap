@@ -25,23 +25,14 @@ class GDT():
         """
 
         self._database = dataset.connect(database)
-        self._table = self._database[datatype].table
+        self._table = self._database[datatype]
+        self._table_name = datatype
 
-        if type(latlong1) is not list and type(latlong2) is not list:
-            raise TypeError("latlong1 and latlong2 must be lists")
+        if self._test_latlong(latlong1):
+            self._latlong1 = latlong1
 
-        if len(latlong1) is not 2 and len(latlong2) is not 2:
-            raise ValueError("latlong1 and latlong2 must be lists of exactly 2 numbers")
-
-        for element in latlong1:
-            if (type(element) is not float) and (type(element) is not int):
-                raise TypeError("All elements in latlong1 must be a number")
-
-        for element in latlong2:
-            if (type(element) is not float) and (type(element) is not int):
-                raise TypeError("All elements in latlong2 must be a number")
-
-        self._latlong1, self._latlong2 = latlong1, latlong2
+        if self._test_latlong(latlong2):
+            self._latlong2 = latlong2
 
     @property
     def latlong1(self):
@@ -50,17 +41,8 @@ class GDT():
 
     @latlong1.setter
     def latlong1(self, value):
-        if type(value) is not list:
-            raise TypeError("latlong1 must be a list")
-
-        if len(value) is not 2:
-            raise ValueError("latlong1 must be a list of exactly 2 numbers")
-
-        for element in value:
-            if (type(element) is not float) and (type(element) is not int):
-                raise TypeError("All elements in latlong1 must be a number")
-
-        self._latlong1 = value
+        if self._test_latlong(value):
+            self._latlong1 = value
 
     @property
     def latlong2(self):
@@ -68,18 +50,25 @@ class GDT():
         return self._latlong2
 
     @latlong2.setter
-    def latlong1(self, value):
+    def latlong2(self, value):
+        if self._test_latlong(value):
+            self._latlong2 = value
+
+    def _test_latlong(self, value):
         if type(value) is not list:
-            raise TypeError("latlong2 must be a list")
+            raise TypeError("latlong must be a list")
+            return False
 
         if len(value) is not 2:
-            raise ValueError("latlong2 must be a list of exactly 2 numbers")
+            raise ValueError("latlong must be a list of exactly 2 numbers")
+            return False
 
         for element in value:
             if (type(element) is not float) and (type(element) is not int):
-                raise TypeError("All elements in latlong2 must be a number")
+                raise TypeError("All elements in latlong must be a number")
+                return False
 
-        self._latlong2 = value
+        return True
 
     def insert(self, item):
         """
@@ -107,8 +96,13 @@ class GDT():
         Finds all items based upon the bounding box defined in the constructor
         """
 
-        statement = "select * from {0} where longitude between {1} and {2} and latitude between {3} and {4}"
-        statement = statement.format(self._table.name, self._latlong1[0],
-                self._latlong2[0], self._latlong1[1], self._latlong2[1])
+        statement = "select * from {0} where latitude between {1} and {2} and longitude between {3} and {4}"
+        statement = statement.format(
+                self._table_name,
+                min([self.latlong1[0], self.latlong2[0]]),
+                max([self.latlong1[0], self.latlong2[0]]),
+                min([self.latlong1[1], self.latlong2[1]]),
+                max([self.latlong1[1], self.latlong2[1]]),
+        )
 
         return self._database.query(statement)

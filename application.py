@@ -12,11 +12,14 @@ def root():
     return render_template('map.html')
 
 @sockets.route('/tweets')
-def get_tweets(ws):
+def send_tweets(ws):
     result = gdt.find()
 
     for item in result:
         ws.send(json.dumps(item))
+
+    while ws.socket is not None:
+        gevent.sleep(1)
 
 if __name__ == '__main__':
     app.debug = True

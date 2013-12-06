@@ -71,10 +71,6 @@ $(function() {
 		var marker = new L
 			.marker([t.longitude, t.latitude])
 			.bindPopup(t.html)
-			.on('onpopup', function(e) {
-				twttr.widgets.load();
-				console.log("clicked");
-			})
 			.addTo(markerLayer);
 
 
