@@ -15,11 +15,12 @@ $ source .venv/bin/activate
 ```shell
 $ pip install -r requirements.txt
 ```
-4. Run the Tweet collector
+4. Save `config-sample.yml` as `config.yml` and add the values you want to use
+5. Run the Tweet collector
 ```shell
 $ python TweetStreamer.py
 ```
-5. Run the webserver
+6. Run the webserver
 ```shell
 $ gunicorn -k flask_sockets.worker application:app
 ```
