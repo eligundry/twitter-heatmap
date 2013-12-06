@@ -1,0 +1,9 @@
+twitter:
+    app_key:
+    app_secret:
+    consumer_token:
+    consumer_secret:
+
+db:
+    connection:
+    datatype:

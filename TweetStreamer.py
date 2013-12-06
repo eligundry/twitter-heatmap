@@ -1,25 +1,20 @@
 from twython import Twython, TwythonStreamer
 from dateutil import parser
 from GDT import *
-import json
+import json, yaml
 
-# Twitter API constants
-TA = {
-    'ck': "HRhPFogV5kE23OnVY88Fw",
-    'cs': "HUxEKIP51KJEfg6TVqzTcLT5mYjAkW9IV6XThrBDZM",
-    'atk': "1965992269-onDizJpLZEcBBcPWbSGof0FnI0U2TlU9YI44n0K",
-    'ats': "D5UK4AoB89AvbfrejZJYDMKvk94sdsiyIyUKBHBdfk"
-}
-
-gdt = GDT('sqlite:///tweets.db', 'tweets')
+config = yaml.safe_load(open('config.yml', 'r'))
+gdt = GDT(config['db']['connection'], config['db']['datatype'])
 
 def setup_twitter_stream():
     """ Sets up a streaming connection to the Twitter API """
-    return TweetStreamer(TA['ck'], TA['cs'], TA['atk'], TA['ats'])
+    tc = config['twitter']
+    return TweetStreamer(tc['app_key'], tc['app_secret'], tc['consumer_key'], tc['consumer_secret'])
 
 def setup_twitter():
     """ Sets up a good ol' REST connection to the Twitter API """
-    return Twython(TA['ck'], TA['cs'], TA['atk'], TA['ats'])
+    tc = config['twitter']
+    return Twython(tc['app_key'], tc['app_secret'], tc['consumer_key'], tc['consumer_secret'])
 
 class TweetStreamer(TwythonStreamer):
     def on_success(self, data):

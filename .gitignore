@@ -1,4 +1,5 @@
 .venv
 *.pyc
 *.db*
-*.yml
+config.yml
+!config-sample.yml

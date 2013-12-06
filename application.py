@@ -1,11 +1,12 @@
 from flask import Flask, render_template
 from flask_sockets import Sockets
 from GDT import *
-import json
+import json, yaml
 
 app = Flask(__name__)
 sockets = Sockets(app)
-gdt = GDT('sqlite:///tweets.db', 'tweets', [41.1367, -81.3893], [41.1616, -81.3413])
+config = yaml.safe_load(open('config.yml', 'r'))
+gdt = GDT(config['db']['connection'], config['db']['datatype'], [41.1367, -81.3893], [41.1616, -81.3413])
 
 @app.route('/')
 def root():
