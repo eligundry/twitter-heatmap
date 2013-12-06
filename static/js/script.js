@@ -42,6 +42,14 @@ $(function() {
 		layers: [baseLayer, markerLayer, heatmap]
 	});
 
+	// Layer Grouping
+	L.control
+		.layers({}, {
+			"Heatmap": heatmap,
+			"Tweets": markerLayer
+		})
+		.addTo(map);
+
 	var tweet_stream = get_tweets();
 
 	tweet_stream.onmessage = function(event) {
@@ -59,6 +67,5 @@ $(function() {
 
 		heatmap.addDataPoint(t.latitude, t.longitude, 10);
 		heatmap.update();
-		console.log(heatmap)
 	};
 });
