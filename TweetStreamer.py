@@ -9,12 +9,12 @@ gdt = GDT(config['db']['connection'], config['db']['datatype'])
 def setup_twitter_stream():
     """ Sets up a streaming connection to the Twitter API """
     tc = config['twitter']
-    return TweetStreamer(tc['app_key'], tc['app_secret'], tc['consumer_key'], tc['consumer_secret'])
+    return TweetStreamer(tc['app_key'], tc['app_secret'], tc['consumer_token'], tc['consumer_secret'])
 
 def setup_twitter():
     """ Sets up a good ol' REST connection to the Twitter API """
     tc = config['twitter']
-    return Twython(tc['app_key'], tc['app_secret'], tc['consumer_key'], tc['consumer_secret'])
+    return Twython(tc['app_key'], tc['app_secret'], tc['consumer_token'], tc['consumer_secret'])
 
 class TweetStreamer(TwythonStreamer):
     def on_success(self, data):
@@ -37,8 +37,8 @@ class Tweet():
             'id': data['id'],
             'text': data['text'],
             'html': None,
-            'latitude': data['geo']['coordinates'][0],
-            'longitude': data['geo']['coordinates'][1],
+            'latitude': float(data['geo']['coordinates'][0]),
+            'longitude': float(data['geo']['coordinates'][1]),
             'user_id': data['user']['id'],
             'username': data['user']['screen_name'],
             'timestamp': parser.parse(data['created_at']).__str__()

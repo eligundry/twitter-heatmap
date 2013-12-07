@@ -7,6 +7,7 @@
 """
 
 import dataset
+import sqlalchemy
 import datetime
 from dateutil import relativedelta
 
@@ -79,7 +80,13 @@ class GDT():
                     you, based upon the keys of the dictionary.
         """
 
-        self._table.insert(item)
+        types = {
+            'latitude': sqlalchemy.Float,
+            'longitude': sqlalchemy.Float,
+            'timestamp': sqlalchemy.DateTime
+        }
+
+        self._table.insert(item, types=types)
 
     def insert_many(self, items):
         """
