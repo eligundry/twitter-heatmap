@@ -5,5 +5,10 @@ twitter:
     consumer_secret:
 
 db:
-    connection:
+    connection: # See: https://dataset.readthedocs.org/en/latest/quickstart.html#connecting-to-a-database
     datatype:
+
+# The inital coordinates (latlong) for the bounding box
+coordinates:
+    ne: []
+    sw: []

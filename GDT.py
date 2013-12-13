@@ -6,8 +6,8 @@
     data type.
 """
 
-import dataset
 import sqlalchemy
+import dataset
 import datetime
 from dateutil import relativedelta
 
@@ -26,7 +26,7 @@ class GDT():
         """
 
         self._database = dataset.connect(database)
-        self._table = self._database[datatype]
+        self._table = self._database.get_table(datatype)
         self._table_name = datatype
 
         if self._test_latlong(latlong1):
@@ -81,6 +81,7 @@ class GDT():
         """
 
         types = {
+            'id': sqlalchemy.BigInteger,
             'latitude': sqlalchemy.Float,
             'longitude': sqlalchemy.Float,
             'timestamp': sqlalchemy.DateTime

@@ -6,7 +6,8 @@ import json, yaml
 app = Flask(__name__)
 sockets = Sockets(app)
 config = yaml.safe_load(open('config.yml', 'r'))
-gdt = GDT(config['db']['connection'], config['db']['datatype'], [41.1367, -81.3893], [41.1616, -81.3413])
+gdt = GDT(config['db']['connection'], config['db']['datatype'],
+        config['coordinates']['sw'], config['coordinates']['ne'])
 
 @app.route('/')
 def root():
@@ -14,9 +15,11 @@ def root():
 
 @sockets.route('/tweets')
 def send_tweets(ws):
-    result = gdt.find()
+    result = gdt._table.all()
 
     for item in result:
+        item['timestamp'] = str(item['timestamp'])
+        print item
         ws.send(json.dumps(item))
 
 if __name__ == '__main__':

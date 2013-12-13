@@ -55,17 +55,14 @@ $(function() {
 	tweet_stream.onmessage = function(event) {
 		var t = jQuery.parseJSON(event.data);
 
-		if (t.disconnect) {
-			tweet_stream.close();
-		}
-
 		// Add a marker to the map
 		var marker = new L
 			.marker([t.latitude, t.longitude])
 			.bindPopup(t.html)
 			.addTo(markerLayer);
 
-		heatmap.addDataPoint(t.latitude, t.longitude, 10);
-		heatmap.update();
+		heatmap
+			.addDataPoint(t.latitude, t.longitude, 10)
+			.update();
 	};
 });

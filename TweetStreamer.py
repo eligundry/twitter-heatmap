@@ -32,9 +32,8 @@ class TweetStreamer(TwythonStreamer):
         self.disconnect()
 
 class Tweet():
-    def __init__(self, data):
+    def __init__(self, data, oembed=True):
         self.data = {
-            'id': data['id'],
             'text': data['text'],
             'html': None,
             'latitude': float(data['geo']['coordinates'][0]),
@@ -44,21 +43,25 @@ class Tweet():
             'timestamp': parser.parse(data['created_at']).__str__()
         }
 
-        self.get_oembed()
-
-        print self
+        if oembed:
+            self.get_oembed(data['id'])
 
     def __str__(self):
         """ Return the Tweet's data in JSON by default """
         return json.dumps(self.data)
 
-    def get_oembed(self):
+    def get_oembed(self, id):
         """ Gets the oEmbed HTML from the Twitter API """
         a = setup_twitter()
-        html = a.get_oembed_tweet(id = str(self.data['id']), omit_script = True, lang = "en", maxwidth = 300)
+        html = a.get_oembed_tweet(id = str(id), omit_script = True, lang = "en", maxwidth = 300)
         self.data['html'] = html['html']
 
 # Run the script infinitely on the server
 if __name__ == "__main__":
-    a = setup_twitter_stream()
-    a.statuses.filter(locations="-81.3893,41.1367,-81.3413,41.1616")
+    # Setup coordinates. Because Twitter expects two longlat pairs, I have to
+    # reverse the arrays and make them into a string.
+    sw, ne = config['coordinates']['sw'], config['coordinates']['ne']
+    coordinates = ','.join(str(l) for l in reversed(ne + sw))
+
+    tweets = setup_twitter_stream()
+    tweets.statuses.filter(locations=coordinates)
