@@ -29,7 +29,7 @@ class TweetStreamer(TwythonStreamer):
 
     def on_error(self, status_code, error):
         print("%s: %s", status_code, error)
-        self.disconnect()
+        # self.disconnect()
 
 class Tweet():
     def __init__(self, data, oembed=True):

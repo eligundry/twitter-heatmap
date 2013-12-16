@@ -19,7 +19,6 @@ def send_tweets(ws):
 
     for item in result:
         item['timestamp'] = str(item['timestamp'])
-        print item
         ws.send(json.dumps(item))
 
 if __name__ == '__main__':

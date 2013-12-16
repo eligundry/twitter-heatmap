@@ -61,6 +61,7 @@ $(function() {
 			.bindPopup(t.html)
 			.addTo(markerLayer);
 
+		// Update the heatmap
 		heatmap
 			.addDataPoint(t.latitude, t.longitude, 10)
 			.update();
